@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nitta Skincare - Deep Clean Facial Specialist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        [x-cloak] { display: none !important; }
+        
+        /* Reset styling input untuk tampilan konsisten di iOS & Android */
+        input, textarea, select {
+            -webkit-appearance: none;
+            appearance: none;
+            outline: none !important;
+        }
+
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #fda4af;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-rose-50 text-slate-800 pb-32" x-data="{ 
+    open: false, 
+    bookingType: 'salon',
+    bookingDate: '',
+    bookingTime: '',
+    customerName: '',
+    customerAddress: '',
+    step: 1,
+    salonNumber: '6282113935951',
+    adminNumber: '62895332777171',
+    service: {
+        title: 'Deep Clean Facial Premium',
+        price: '110.000',
+        category: 'Facial Treatment',
+        desc: 'Perawatan pembersihan mendalam yang dirancang khusus untuk mengangkat komedo membandel, sel kulit mati, dan kotoran hingga ke pori-pori terdalam. Sangat cocok untuk mengembalikan kesegaran wajah yang lelah akibat polusi.',
+        specs: [
+            'Double Cleansing Foam', 
+            'Face Massage & Relaxing Scrub', 
+            'Extraction (Pembersihan Komedo)', 
+            'Cold Ball Therapy (Pengecilan Pori)', 
+            'Masker Organik & Glow Serum'
+        ],
+        img: 'facial.jpg'
+    },
+    processBooking() {
+        if(!this.customerName || !this.bookingDate || !this.bookingTime) {
+            alert('Mohon lengkapi data Nama, Tanggal, dan Jam Treatment');
+            return;
+        }
+
+        let detailMsg = `*DATA PESANAN*\n`;
+        detailMsg += `Nama: *${this.customerName}*\n`;
+        detailMsg += `Layanan: *${this.service.title}*\n`;
+        detailMsg += `Metode: *${this.bookingType === 'home' ? 'Home Service' : 'Datang ke Salon'}*\n`;
+        
+        if(this.bookingType === 'home') {
+            detailMsg += `Alamat: *${this.customerAddress || '-'}*\n`;
+        }
+        
+        detailMsg += `Tanggal: *${this.bookingDate}*\n`;
+        detailMsg += `Jam: *${this.bookingTime}*\n\n`;
+
+        if (this.step === 1) {
+            // LANGKAH 1: KE NOMOR ADMIN (Verifikasi)
+            let msg = `*HALO ADMIN NITTA SKINCARE*\n`;
+            msg += `Saya ingin melakukan booking baru (Langkah 1):\n\n${detailMsg}`;
+            msg += `Mohon dibantu prosesnya, terima kasih!`;
+            
+            const waUrl = 'https://wa.me/' + this.adminNumber + '?text=' + encodeURIComponent(msg);
+            window.open(waUrl, '_blank');
+            this.step = 2; // Ubah tombol ke langkah kedua
+        } else {
+            // LANGKAH 2: KE NOMOR SALON (Konfirmasi Final)
+            let msg = `*RESERVASI FINAL TERVERIFIKASI*\n`;
+            msg += `Halo Nitta Skincare! Saya sudah lapor Admin dan ingin konfirmasi jadwal ini:\n\n${detailMsg}`;
+            msg += `Ditunggu kedatangannya ya!`;
+            
+            const waUrl = 'https://wa.me/' + this.salonNumber + '?text=' + encodeURIComponent(msg);
+            window.open(waUrl, '_blank');
+            
+            // Reset state ke awal setelah semua langkah selesai
+            this.step = 1;
+            this.customerName = '';
+            this.bookingDate = '';
+            this.bookingTime = '';
+            this.customerAddress = '';
+        }
+    }
+}">
+
+    <!-- Header -->
+    <header class="bg-white pt-16 pb-12 px-6 rounded-b-[4rem] shadow-xl shadow-rose-100/50">
+        <div class="max-w-screen-xl mx-auto text-center">
+            <h1 class="text-[10px] font-black tracking-[0.5em] text-rose-400 uppercase mb-4">Official Specialist</h1>
+            <h2 class="text-4xl lg:text-6xl font-extrabold text-slate-900 tracking-tighter">NITTA SKINCARE<span class="text-rose-500">.</span></h2>
+            <p class="text-xs text-slate-400 mt-4 italic font-medium">"Deep Cleaning Expertise for Your Best Skin"</p>
+        </div>
+    </header>
+
+    <main class="max-w-screen-md mx-auto px-5 mt-10">
+        
+        <!-- Service Hero Card -->
+        <div class="bg-white rounded-[3.5rem] overflow-hidden shadow-2xl border border-rose-100/50">
+            <!-- Image Area -->
+            <div class="relative h-80 sm:h-[450px]">
+                <img :src="service.img" class="w-full h-full object-cover" alt="Deep Clean Facial">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div class="absolute bottom-10 left-10 text-white">
+                    <span class="bg-rose-500 text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest mb-3 inline-block">Best Seller</span>
+                    <h3 class="text-3xl font-black" x-text="service.title"></h3>
+                    <p class="text-xl font-bold text-rose-300 mt-1 italic">Rp<span x-text="service.price"></span></p>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="p-8 md:p-12">
+                <div class="space-y-8 mb-10">
+                    <div>
+                        <h5 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Kenapa Harus Deep Clean?</h5>
+                        <p class="text-sm md:text-base text-slate-600 leading-relaxed font-medium" x-text="service.desc"></p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <template x-for="spec in service.specs">
+                            <div class="flex items-center gap-3 bg-rose-50 p-4 rounded-2xl border border-rose-100/50">
+                                <div class="w-2 h-2 rounded-full bg-rose-400 shrink-0"></div>
+                                <span class="text-xs text-slate-700 font-bold" x-text="spec"></span>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Action Section -->
+                <div class="bg-slate-50 p-8 rounded-[2.5rem] border border-slate-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h4 class="font-black text-slate-900 text-lg">Booking Jadwal</h4>
+                        <!-- Progress Indicator -->
+                        <div class="flex gap-1.5">
+                            <div class="h-1.5 w-6 rounded-full transition-all duration-500" :class="step === 1 ? 'bg-indigo-600' : 'bg-slate-200'"></div>
+                            <div class="h-1.5 w-6 rounded-full transition-all duration-500" :class="step === 2 ? 'bg-rose-500' : 'bg-slate-200'"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-900 uppercase tracking-widest ml-1">Nama Lengkap</label>
+                            <input type="text" x-model="customerName" placeholder="Masukkan nama..." class="w-full bg-white border-2 border-slate-200 rounded-[1.5rem] p-4 text-sm font-bold focus:border-rose-400 outline-none transition-all">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-slate-900 uppercase tracking-widest ml-1">Pilih Metode</label>
+                                <select x-model="bookingType" class="w-full bg-white border-2 border-slate-200 rounded-[1.5rem] p-4 text-sm font-bold focus:border-rose-400 outline-none transition-all">
+                                    <option value="salon">Datang ke Salon</option>
+                                    <option value="home">Home Service</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-slate-900 uppercase tracking-widest ml-1">Jam Datang</label>
+                                <input type="time" x-model="bookingTime" class="w-full bg-white border-2 border-slate-200 rounded-[1.5rem] p-4 text-sm font-bold focus:border-rose-400 outline-none transition-all">
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-900 uppercase tracking-widest ml-1">Tanggal Treatment</label>
+                            <input type="date" x-model="bookingDate" class="w-full bg-white border-2 border-slate-200 rounded-[1.5rem] p-4 text-sm font-bold focus:border-rose-400 outline-none transition-all">
+                        </div>
+
+                        <div x-show="bookingType === 'home'" x-transition class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-900 uppercase tracking-widest ml-1">Alamat Pengantaran</label>
+                            <textarea x-model="customerAddress" placeholder="Sebutkan alamat lengkap & patokan..." class="w-full bg-white border-2 border-slate-200 rounded-[1.5rem] p-4 text-sm font-bold focus:border-rose-400 outline-none h-24 resize-none transition-all"></textarea>
+                        </div>
+
+                        <!-- Tombol Dual Step -->
+                        <button 
+                            @click="processBooking()"
+                            :class="step === 1 ? 'bg-indigo-600 shadow-indigo-100' : 'bg-rose-500 shadow-rose-100'"
+                            class="w-full mt-6 py-5 text-white rounded-[2rem] flex flex-col items-center justify-center gap-1 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-2xl relative overflow-hidden"
+                        >
+                            <span class="text-[9px] font-black uppercase tracking-[0.3em] opacity-70" x-text="step === 1 ? 'Langkah 1: Verifikasi' : 'Langkah 2: Selesai'"></span>
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm font-black uppercase tracking-[0.2em]" x-text="step === 1 ? 'Kirim Pesan' : 'Konfirmasi ke Salon'"></span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-12 text-center text-slate-400">
+            <p class="text-[10px] font-black uppercase tracking-[0.3em] mb-2">Layanan Home Service Tersedia</p>
+            <p class="text-[11px] font-medium italic">"Kami hadirkan standar klinik ke rumah Anda."</p>
+        </div>
+    </main>
+
+    <!-- Bottom Nav -->
+    <nav class="fixed bottom-8 inset-x-6 z-40">
+        <div class="max-w-screen-sm mx-auto bg-slate-900/95 backdrop-blur-2xl rounded-[3rem] p-4 flex items-center justify-between shadow-2xl border border-white/10">
+            <div class="bg-rose-500 text-white w-12 h-12 rounded-[1.5rem] flex items-center justify-center shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                </svg>
+            </div>
+            <div class="flex-1 px-6">
+                <p class="text-[10px] text-rose-400 uppercase font-black tracking-[0.3em] mb-1 leading-none">Nitta Skincare Expert</p>
+                <p class="text-[11px] text-white font-bold opacity-90 leading-none">Jl. Jembatan Opat Kiaracondong RT 03 RW 06 Bandung</p>
+            </div>
+            <!-- Shortcut langsung ke Admin -->
+            <a href="https://wa.me/62895332777171" class="bg-white/10 text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/20 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 005.47 5.47l.772-1.548a1 1 0 011.06-.539l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                </svg>
+            </a>
+        </div>
+    </nav>
+
+</body>
+</html>
